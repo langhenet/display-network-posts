@@ -17,35 +17,44 @@ function glwb_list_network_posts( $atts ) {
 
     // define attributes and their defaults
     extract( shortcode_atts( array (
+        'blogs' => '1',
         'type' => 'post',
         'order' => 'date',
         'orderby' => 'title',
-        'posts' => -1,
-        'color' => '',
-        'fabric' => '',
-        'category' => '',
+        'posts' => 6,
+    //    'tax' => '',
+    //    'tax-term' => '',
     ), $atts ) );
 
     // define query parameters based on attributes
     $options = array(
         'post_type' => $type,
-        'order' => $order,
-        'orderby' => $orderby,
+      //  'order' => $order,
+      //  'orderby' => $orderby,
         'posts_per_page' => $posts,
-        'color' => $color,
-        'fabric' => $fabric,
-        'category_name' => $category,
+      //  'color' => $color,
+      //  'fabric' => $fabric,
     );
-    $query = new WP_Query( $options );
-    // run the loop based on the query
-    if ( $query->have_posts() ) { ?>
-        <ul class="clothes-listing ">
-            <ul class="clothes-listing ">
-                <li id="post-<?php the_ID(); ?>">></li>
-            </ul>
-        </ul>
-    <?php
-        $myvariable = ob_get_clean();
-        return $myvariable;
+
+    //dichiaro la query
+    $network_query = new WP_Query( $options );
+
+    // Loop
+    if ( $network_query->have_posts() ) {
+      echo "there are posts";
+      while ( $network_query->have_posts() ) {
+        $network_query->the_post();
+        get_template_part( '/templates/loop' , ' prova ' );
+
+        wp_reset_postdata();
+      }
     }
-}
+
+    else { ?>
+      <p><?php _e( 'Sorry, no posts matched your criteria.' ); ?></p>
+
+    <?php }
+
+    $myvariable = ob_get_clean();
+    return $myvariable;
+  }
