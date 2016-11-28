@@ -16,22 +16,24 @@ function glwb_list_network_posts( $atts ) {
     ob_start();
 
     // define attributes and their defaults
-    extract( shortcode_atts( array (
-        'blogs' => '1',
-        'type' => 'post',
-        'order' => 'date',
+    shortcode_atts( array (
+        'blogs'   => '1',
+        'type'    => 'post',
+        'order'   => 'asc',
         'orderby' => 'title',
-        'posts' => 6,
+        'posts'   => 6,
+        'layout'  => 'list',
+        'columns'  => 3
     //    'tax' => '',
     //    'tax-term' => '',
-    ), $atts ) );
+    ), $atts );
 
     // define query parameters based on attributes
     $options = array(
-        'post_type' => $type,
+        'post_type' => $atts['type'],
       //  'order' => $order,
       //  'orderby' => $orderby,
-        'posts_per_page' => $posts,
+        'posts_per_page' => $atts['posts'],
       //  'color' => $color,
       //  'fabric' => $fabric,
     );
@@ -41,20 +43,29 @@ function glwb_list_network_posts( $atts ) {
 
     // Loop
     if ( $network_query->have_posts() ) {
-      echo "there are posts";
+      var_dump($atts);
+      echo "<br/>there are posts";
       while ( $network_query->have_posts() ) {
-        $network_query->the_post();
-        get_template_part( '/templates/loop' , ' prova ' );
 
-        wp_reset_postdata();
-      }
+        $network_query->the_post();
+
+        if ( $atts['layout'] == 'grid' ) {
+          include( '/templates/loop-grid.php' );
+        }
+
+        else {
+          include( '/templates/loop-list.php' );
+        }
+
+      wp_reset_postdata();
     }
+  }
 
     else { ?>
       <p><?php _e( 'Sorry, no posts matched your criteria.' ); ?></p>
 
-    <?php }
+    <?php }
 
-    $myvariable = ob_get_clean();
-    return $myvariable;
+    $output = ob_get_clean();
+    return $output;
   }
