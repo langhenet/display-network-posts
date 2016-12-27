@@ -13,59 +13,57 @@ License: GPLv2
 // create shortcode with parameters so that the user can define what's queried - default is to list all blog posts
 add_shortcode( 'network-posts', 'glwb_list_network_posts' );
 function glwb_list_network_posts( $atts ) {
-    ob_start();
+  ob_start();
 
-    // define attributes and their defaults
-    shortcode_atts( array (
-        'blogs'   => '1',
-        'type'    => 'post',
-        'order'   => 'asc',
-        'orderby' => 'title',
-        'posts'   => 6,
-        'layout'  => 'list',
-        'columns'  => 3
-    //    'tax' => '',
-    //    'tax-term' => '',
-    ), $atts );
+  // define attributes and their defaults
+  $atts = shortcode_atts( array (
+      'blogs'   => '1',
+      'type'    => 'post',
+      'order'   => 'desc',
+      'orderby' => 'title',
+      'posts'   => 6,
+      'layout'  => 'list',
+      'columns'  => 3
+  //    'tax' => '',
+  //    'tax-term' => '',
+  ), $atts );
 
-    // define query parameters based on attributes
-    $options = array(
-        'post_type' => $atts['type'],
-      //  'order' => $order,
-      //  'orderby' => $orderby,
-        'posts_per_page' => $atts['posts'],
-      //  'color' => $color,
-      //  'fabric' => $fabric,
-    );
+  // define query parameters based on attributes
+  $options = array(
+      'post_type' => $atts['type'],
+      'order' => $atts['order'],
+      'orderby' => $atts['orderby'],
+      'posts_per_page' => $atts['posts'],
+  );
 
-    //dichiaro la query
-    $network_query = new WP_Query( $options );
+  //dichiaro la query
+  $network_query = new WP_Query( $options );
 
-    // Loop
-    if ( $network_query->have_posts() ) {
-      var_dump($atts);
-      echo "<br/>there are posts";
-      while ( $network_query->have_posts() ) {
+  // Loop
+  if ( $network_query->have_posts() ) {
+    var_dump($atts);
+    echo "<br/>there are posts";
+    while ( $network_query->have_posts() ) {
 
-        $network_query->the_post();
+      $network_query->the_post();
 
-        if ( $atts['layout'] == 'grid' ) {
-          include( '/templates/loop-grid.php' );
-        }
+      if ( $atts['layout'] == 'grid' ) {
+        include( '/templates/loop-grid.php' );
+      }
 
-        else {
-          include( '/templates/loop-list.php' );
-        }
+      else {
+        include( '/templates/loop-list.php' );
+      }
 
-      wp_reset_postdata();
-    }
+    wp_reset_postdata();
   }
+}
 
-    else { ?>
-      <p><?php _e( 'Sorry, no posts matched your criteria.' ); ?></p>
+  else { ?>
+    <p><?php _e( 'Sorry, no posts matched your criteria.' ); ?></p>
 
-    <?php }
+  <?php }
 
-    $output = ob_get_clean();
-    return $output;
-  }
+  $output = ob_get_clean();
+  return $output;
+}
