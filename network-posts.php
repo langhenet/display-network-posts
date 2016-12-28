@@ -5,7 +5,7 @@ Plugin URI: http://langhe.net/
 Description: This lightweight plugin uses a shortcode to displays posts from any site of a Multisite Network, as a list or as a grid
 Version: 1.0
 Author: Enrico Cassinelli
-Author URI: http://rachelmccollin.co.uk
+Author URI: http://glocalweb.it
 License: GPLv2
 */
 
@@ -37,6 +37,7 @@ function glwb_list_network_posts( $atts ) {
   );
 
   //dichiaro la query
+  switch_to_blog( $atts['blogs']);
   $network_query = new WP_Query( $options );
 
   // Loop
@@ -63,7 +64,7 @@ function glwb_list_network_posts( $atts ) {
     <p><?php _e( 'Sorry, no posts matched your criteria.' ); ?></p>
 
   <?php }
-
+  restore_current_blog();
   $output = ob_get_clean();
   return $output;
 }

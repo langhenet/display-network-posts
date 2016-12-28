@@ -1,4 +1,4 @@
 <?php
 
 echo "griglia"; ?>
-<h3 class="<?php echo $atts['columns']; ?>"><?php the_title(); ?></h3>
+<h3 class="<?php echo $atts['columns']; ?>"><a href="<?php the_permalink() ?>"><?php the_title(); ?></a></h3>
