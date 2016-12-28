@@ -41,29 +41,37 @@ function glwb_list_network_posts( $atts ) {
   $network_query = new WP_Query( $options );
 
   // Loop
-  if ( $network_query->have_posts() ) {
+  if ( $network_query->have_posts() ) :
     var_dump($atts);
     echo "<br/>there are posts";
-    while ( $network_query->have_posts() ) {
-
-      $network_query->the_post();
-
-      if ( $atts['layout'] == 'grid' ) {
-        include( '/templates/loop-grid.php' );
-      }
-
-      else {
+    if ( $atts['layout'] == 'grid' ) :
+?>
+      <div class="dnp-grid__container" style="display: flex; flex-direction: row; flex-wrap: wrap;">
+<?php
+        while ( $network_query->have_posts() ) {
+          $network_query->the_post();
+          include( '/templates/loop-grid.php' );
+        }
+?>
+      </div>
+<?php
+    else :
+      echo '<h1>cane maledetto</h1>';
+      while ( $network_query->have_posts() ) {
+        $network_query->the_post();
         include( '/templates/loop-list.php' );
       }
+    endif;
 
     wp_reset_postdata();
-  }
-}
 
-  else { ?>
+
+  else :
+?>
     <p><?php _e( 'Sorry, no posts matched your criteria.' ); ?></p>
 
-  <?php }
+<?php
+  endif;
   restore_current_blog();
   $output = ob_get_clean();
   return $output;
