@@ -33,6 +33,10 @@ function glwb_list_network_posts( $atts ) {
       'order' => $atts['order'],
       'orderby' => $atts['orderby'],
       'posts_per_page' => $atts['posts'],
+      //'update_post_meta_cache' => false,
+      //'update_post_term_cache' => false,
+      //'cache_results' => false
+      'no_found_rows' => true
   );
 
   //New Query to the correct blog
