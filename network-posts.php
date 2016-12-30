@@ -9,7 +9,6 @@ Author URI: http://glocalweb.it
 License: GPLv2
 */
 
-// create shortcode to list all clothes which come in blue
 // create shortcode with parameters so that the user can define what's queried - default is to list all blog posts
 add_shortcode( 'network-posts', 'glwb_list_network_posts' );
 function glwb_list_network_posts( $atts ) {
