@@ -13,7 +13,7 @@ License: GPLv2
 // create shortcode with parameters so that the user can define what's queried - default is to list all blog posts
 add_shortcode( 'network-posts', 'glwb_list_network_posts' );
 function glwb_list_network_posts( $atts ) {
-  ob_start();
+  //ob_start();
 
   // define attributes and their defaults
   $atts = shortcode_atts( array (
@@ -34,11 +34,17 @@ function glwb_list_network_posts( $atts ) {
       'order' => $atts['order'],
       'orderby' => $atts['orderby'],
       'posts_per_page' => $atts['posts'],
+      //'cache_results' => false,
+      //'update_post_term_cache' => false,
+      //'update_post_meta_cache' => false
   );
 
   //dichiaro la query
   switch_to_blog( $atts['blogs']);
   $network_query = new WP_Query( $options );
+  timer_start();
+
+
 
   // Loop
   if ( $network_query->have_posts() ) :
@@ -48,6 +54,7 @@ function glwb_list_network_posts( $atts ) {
 ?>
       <div class="dnp-grid__container" style="display: flex; flex-direction: row; flex-wrap: wrap;">
 <?php
+
         while ( $network_query->have_posts() ) {
           $network_query->the_post();
           include( '/templates/loop-grid.php' );
@@ -73,6 +80,7 @@ function glwb_list_network_posts( $atts ) {
 <?php
   endif;
   restore_current_blog();
-  $output = ob_get_clean();
-  return $output;
-}
+  //$output = ob_get_clean();
+  //return $output;
+   echo get_num_queries(); ?> queries in <?php timer_stop(1, 5); ?> seconds.
+<?php }
