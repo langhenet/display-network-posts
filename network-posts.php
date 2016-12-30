@@ -37,7 +37,7 @@ function glwb_list_network_posts( $atts ) {
   );
 
   //New Query to the correct blog
-  switch_to_blog( $atts['blogs']);
+  //switch_to_blog( $atts['blogs']);
   $network_query = new WP_Query( $options );
 
   // Loop
@@ -61,7 +61,7 @@ function glwb_list_network_posts( $atts ) {
 
 <?php
   endif;
-  restore_current_blog();
+  //restore_current_blog();
   $output = ob_get_clean();
   return $output;
 }
