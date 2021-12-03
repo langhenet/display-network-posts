@@ -10,8 +10,8 @@ License: GPLv2
 */
 
 // create shortcode with parameters so that the user can define what's queried - default is to list all blog posts
-add_shortcode( 'network-posts', 'glwb_list_network_posts' );
-function glwb_list_network_posts( $atts ) {
+add_shortcode( 'network-posts', 'glwb_list_posts' );
+function glwb_list_posts( $atts ) {
   ob_start();
 
   // define attributes and their defaults
@@ -32,38 +32,47 @@ function glwb_list_network_posts( $atts ) {
       'post_type' => $atts['type'],
       'order' => $atts['order'],
       'orderby' => $atts['orderby'],
+      'offset'           => 0,
       'posts_per_page' => $atts['posts'],
       //'update_post_meta_cache' => false,
-      //'update_post_term_cache' => false,
+      'update_post_term_cache' => false,
+      //'no_found_rows' => true,
       //'cache_results' => false
-      'no_found_rows' => true
+
   );
 
   //New Query to the correct blog
   //switch_to_blog( $atts['blogs']);
-  $network_query = new WP_Query( $options );
+  global $post;
+  $posts = get_posts( $options );
 
+  ?>
+        <div class="dnp-grid__container" style="display: flex; flex-direction: row; flex-wrap: wrap;">
+  <?php
   // Loop
-  if ( $network_query->have_posts() ) :
-?>
-      <div class="dnp-grid__container" style="display: flex; flex-direction: row; flex-wrap: wrap;">
-<?php
-        while ( $network_query->have_posts() ) {
-          $network_query->the_post();
-          include( '/templates/loop-grid.php' );
-        }
+
+  //6 righe di debug - provare a salvare gli ID in un array per poi -> http://wordpress.stackexchange.com/questions/174308/retrieve-featured-image-thumbnail-url-from-multiple-posts-with-one-query
+  echo '<pre>'; var_dump($posts); echo '</pre>';
+  $post_ids = array();
+    foreach($posts as $ciccio) :
+      $post_ids[] = $ciccio->ID;
+    endforeach;
+  echo '<pre>'; var_dump($post_ids); echo '</pre>';
+
+  foreach ($posts as $post) :
+
+    //setup_postdata( $post );
+  //  echo '<pre>'; var_dump($post); echo '</pre>';
+    echo $post->ID; echo ' - ';
+
+  //  include( '/templates/loop-grid.php' );
+    endforeach;
+    wp_reset_postdata();
 ?>
       </div>
 <?php
 
-    wp_reset_postdata();
 
-  else :
-?>
-    <p><?php _e( 'Sorry, no posts matched your criteria.' ); ?></p>
-
-<?php
-  endif;
   //restore_current_blog();
   $output = ob_get_clean();
   return $output;
